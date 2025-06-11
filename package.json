@@ -2,8 +2,7 @@
   "name": "my-blog",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://choseolmin.github.io/my-blog"
-  ,
+  "homepage": "https://choseolmin.github.io/my-blog",
   "dependencies": {
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -17,7 +16,8 @@
     "react-router-dom": "^6.30.1",
     "react-scripts": "5.0.1",
     "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "web3": "^4.16.0"
   },
   "scripts": {
     "start": "react-scripts start",
