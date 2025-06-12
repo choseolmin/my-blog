@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import { Web3Account } from 'web3-eth-accounts';
+import * as bip39 from 'bip39';
+import { Buffer } from 'buffer';
+import { HDNode } from '@ethersproject/hdnode';
+import { ethers } from 'ethers';
+
+// Buffer를 전역 객체에 추가
+declare global {
+  interface Window {
+    Buffer: typeof Buffer;
+  }
+}
+window.Buffer = Buffer;
 
 const NETWORKS = {
   KAIA: {
@@ -18,31 +30,24 @@ const WalletPage: React.FC = () => {
   const [amount, setAmount] = useState('');
   const [txHash, setTxHash] = useState<Uint8Array | string | null>(null);
   const [copySuccess, setCopySuccess] = useState<boolean>(false);
+  const [copyAddressSuccess, setCopyAddressSuccess] = useState<boolean>(false);
   const [privateKey, setPrivateKey] = useState('');
   const [isImporting, setIsImporting] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [newAddress, setNewAddress] = useState('');
   const [newPrivateKey, setNewPrivateKey] = useState('');
   const [selectedNetwork, setSelectedNetwork] = useState(NETWORKS.KAIA);
-  const [web3, setWeb3] = useState(new Web3(NETWORKS.KAIA.rpcUrl));
+  const [web3, setWeb3] = useState<Web3>(new Web3(NETWORKS.KAIA.rpcUrl));
   const [showWalletOptions, setShowWalletOptions] = useState<boolean>(true);
+  const [showPrivateKey, setShowPrivateKey] = useState(false);
+  const [showMnemonic, setShowMnemonic] = useState(false);
+  const [mnemonic, setMnemonic] = useState<string>('');
+  const [previewAddress, setPreviewAddress] = useState<string | null>(null);
 
   // 컴포넌트 마운트 시 자동으로 지갑 가져오기
   useEffect(() => {
-    const importInitialWallet = async () => {
-      try {
-        const privateKey = '0x4c3f92e8746e766529c19535f4c6edfb3052e18d59133fda5eda2cd97de600b1';
-        const importedWallet = web3.eth.accounts.privateKeyToAccount(privateKey);
-        setWallet(importedWallet);
-        // 잔액 자동 조회
-        const balanceWei = await web3.eth.getBalance(importedWallet.address);
-        setBalance(web3.utils.fromWei(balanceWei, 'ether'));
-      } catch (error) {
-        console.error('초기 지갑 가져오기 실패:', error);
-      }
-    };
-
-    importInitialWallet();
+    // 초기 지갑 가져오기 로직 제거
+    setShowWalletOptions(true);
   }, [web3]);
 
   const changeNetwork = (network: typeof NETWORKS.KAIA) => {
@@ -52,47 +57,61 @@ const WalletPage: React.FC = () => {
     setTxHash(null);
   };
 
-  const createWallet = () => {
+  const createWallet = async () => {
     try {
-      if (!newAddress || !newPrivateKey) {
-        alert('주소와 프라이빗 키를 모두 입력해주세요.');
-        return;
-      }
-
-      const account = web3.eth.accounts.privateKeyToAccount(newPrivateKey);
+      // 니모닉 생성
+      const mnemonic = bip39.generateMnemonic();
       
-      if (account.address.toLowerCase() !== newAddress.toLowerCase()) {
-        alert('입력한 주소와 프라이빗 키가 일치하지 않습니다.');
-        return;
-      }
-
-      setWallet(account);
+      // 니모닉으로부터 지갑 생성
+      const wallet = ethers.Wallet.fromMnemonic(mnemonic);
+      
+      // 상태 업데이트
+      setMnemonic(mnemonic);
+      setWallet({
+        address: wallet.address,
+        privateKey: wallet.privateKey
+      } as Web3Account);
       setBalance(null);
       setTxHash(null);
       setIsCreating(false);
-      setNewAddress('');
-      setNewPrivateKey('');
       setShowWalletOptions(false);
-      getBalance(account.address);
+
+      // 잔액 조회
+      try {
+        await getBalance(wallet.address);
+      } catch (error) {
+        console.error('잔액 조회 실패:', error);
+      }
     } catch (error) {
       console.error('지갑 생성 실패:', error);
-      alert('유효하지 않은 주소 또는 프라이빗 키입니다.');
+      alert('지갑 생성에 실패했습니다. 다시 시도해주세요.');
+      setIsCreating(false);
     }
   };
 
-  const importWallet = () => {
+  const importWallet = async () => {
     try {
-      const importedWallet = web3.eth.accounts.privateKeyToAccount(privateKey);
-      setWallet(importedWallet);
+      if (!bip39.validateMnemonic(mnemonic)) {
+        alert('유효하지 않은 니모닉입니다.');
+        return;
+      }
+
+      // 니모닉으로부터 지갑 생성
+      const wallet = ethers.Wallet.fromMnemonic(mnemonic);
+      
+      setWallet({
+        address: wallet.address,
+        privateKey: wallet.privateKey
+      } as Web3Account);
       setBalance(null);
       setTxHash(null);
-      setPrivateKey('');
+      setMnemonic('');
       setIsImporting(false);
       setShowWalletOptions(false);
-      getBalance(importedWallet.address);
+      getBalance(wallet.address);
     } catch (error) {
       console.error('지갑 가져오기 실패:', error);
-      alert('유효하지 않은 프라이빗 키입니다.');
+      alert('지갑 가져오기에 실패했습니다.');
     }
   };
 
@@ -102,6 +121,7 @@ const WalletPage: React.FC = () => {
       setBalance(web3.utils.fromWei(balanceWei, 'ether'));
     } catch (error) {
       console.error('잔액 조회 실패:', error);
+      setBalance('0'); // 에러 발생 시 잔액을 0으로 설정
     }
   };
 
@@ -150,16 +170,68 @@ const WalletPage: React.FC = () => {
     }
   };
 
+  const copyMnemonic = async () => {
+    if (mnemonic) {
+      try {
+        await navigator.clipboard.writeText(mnemonic);
+        setCopySuccess(true);
+        setTimeout(() => setCopySuccess(false), 2000);
+      } catch (err) {
+        console.error('복사 실패:', err);
+      }
+    }
+  };
+
+  const copyAddress = async () => {
+    if (wallet) {
+      try {
+        await navigator.clipboard.writeText(wallet.address);
+        setCopyAddressSuccess(true);
+        setTimeout(() => setCopyAddressSuccess(false), 2000);
+      } catch (err) {
+        console.error('복사 실패:', err);
+      }
+    }
+  };
+
+  const previewWallet = async (mnemonic: string) => {
+    try {
+      if (!mnemonic.trim()) {
+        setPreviewAddress(null);
+        return;
+      }
+
+      // 니모닉 유효성 검사
+      if (!bip39.validateMnemonic(mnemonic)) {
+        setPreviewAddress('유효하지 않은 니모닉입니다.');
+        return;
+      }
+
+      // 니모닉으로부터 지갑 주소 생성
+      const wallet = ethers.Wallet.fromMnemonic(mnemonic);
+      setPreviewAddress(wallet.address);
+    } catch (error) {
+      console.error('지갑 미리보기 실패:', error);
+      setPreviewAddress('지갑 주소를 생성할 수 없습니다.');
+    }
+  };
+
   return (
     <div className="blog-container">
       <h2>🦊 블록체인 지갑</h2>
 
       {showWalletOptions ? (
         <div className="wallet-actions">
-          <button onClick={() => setIsCreating(true)} className="wallet-button">
+          <button onClick={() => {
+            setIsCreating(true);
+            setIsImporting(false);
+          }} className="wallet-button">
             새 지갑 생성
           </button>
-          <button onClick={() => setIsImporting(true)} className="wallet-button">
+          <button onClick={() => {
+            setIsImporting(true);
+            setIsCreating(false);
+          }} className="wallet-button">
             기존 지갑 가져오기
           </button>
         </div>
@@ -167,34 +239,39 @@ const WalletPage: React.FC = () => {
 
       {isCreating ? (
         <div className="create-wallet">
-          <input
-            type="text"
-            placeholder="지갑 주소를 입력하세요"
-            value={newAddress}
-            onChange={(e) => setNewAddress(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="프라이빗 키를 입력하세요"
-            value={newPrivateKey}
-            onChange={(e) => setNewPrivateKey(e.target.value)}
-          />
+          <p>새로운 지갑을 생성하시겠습니까?</p>
+          <p className="warning-text">⚠️ 생성된 지갑의 니모닉 키는 안전한 곳에 보관하세요!</p>
           <div className="import-buttons">
-            <button onClick={createWallet}>생성</button>
-            <button onClick={() => setIsCreating(false)}>취소</button>
+            <button onClick={createWallet}>지갑 생성</button>
+            <button onClick={() => {
+              setIsCreating(false);
+              setShowWalletOptions(true);
+            }}>취소</button>
           </div>
         </div>
       ) : isImporting ? (
         <div className="import-wallet">
           <input
-            type="password"
-            placeholder="프라이빗 키를 입력하세요"
-            value={privateKey}
-            onChange={(e) => setPrivateKey(e.target.value)}
+            type="text"
+            placeholder="니모닉 키를 입력하세요"
+            value={mnemonic}
+            onChange={(e) => {
+              setMnemonic(e.target.value);
+              previewWallet(e.target.value);
+            }}
           />
+          {previewAddress && (
+            <div className="preview-address">
+              <p><strong>지갑 주소:</strong> {previewAddress}</p>
+            </div>
+          )}
           <div className="import-buttons">
             <button onClick={importWallet}>가져오기</button>
-            <button onClick={() => setIsImporting(false)}>취소</button>
+            <button onClick={() => {
+              setIsImporting(false);
+              setShowWalletOptions(true);
+              setPreviewAddress(null);
+            }}>취소</button>
           </div>
         </div>
       ) : wallet && !showWalletOptions ? (
@@ -202,14 +279,24 @@ const WalletPage: React.FC = () => {
           <div className="wallet-info">
             <p className="address-private-section">
               <strong>주소:</strong> {wallet.address}
-            </p>
-            <div className="private-key-section address-private-section">
-              <strong>프라이빗 키:</strong>
-              <button onClick={copyPrivateKey} className="copy-btn">
-                복사
+              <button onClick={copyAddress} className="copy-btn">
+                {copyAddressSuccess ? '복사됨!' : '복사'}
               </button>
-              {copySuccess && <span className="copy-success">✔ 복사됨!</span>}
-            </div>
+            </p>
+            {mnemonic && (
+              <div className="private-key-section address-private-section">
+                <strong>니모닉 키:</strong>
+                <div className="key-display">
+                  <span>{showMnemonic ? mnemonic : '••••••••••••••••'}</span>
+                  <button onClick={() => setShowMnemonic(!showMnemonic)} className="toggle-visibility">
+                    {showMnemonic ? '👁️' : '👁️‍🗨️'}
+                  </button>
+                  <button onClick={copyMnemonic} className="copy-btn">
+                    복사
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           <button onClick={() => getBalance(wallet.address)}>잔액 조회</button>
