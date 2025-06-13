@@ -747,3 +747,74 @@ a:hover {
 .preview-address strong {
   color: var(--title-color);
 }
+
+.explorer-section {
+  background-color: var(--bg-color);
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+.explorer-section h3 {
+  margin-top: 0;
+  color: var(--text-color);
+  font-size: 1.2em;
+}
+
+.search-box {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.search-box button {
+  padding: 12px 24px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.search-box button:hover {
+  background-color: #45a049;
+}
+
+.info-box {
+  background-color: var(--bg-color-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+}
+
+.info-box h4 {
+  margin-top: 0;
+  color: var(--text-color);
+}
+
+.info-box p {
+  margin: 8px 0;
+  color: var(--text-color);
+  word-break: break-all;
+}
+
+.loading {
+  text-align: center;
+  padding: 20px;
+  color: var(--text-color);
+  font-size: 1.1em;
+}

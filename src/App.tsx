@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { HashRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useNavigate, useLocation, Navigate, Link } from 'react-router-dom';
 import './App.css';
 import CommentPage from './components/CommentPage';
 import ThemeToggle from './components/ThemeToggle';
 import WalletPage from './components/WalletPage';
 import ScrollToTop from './components/ScrollToTop';
+import ExplorerPage from './components/ExplorerPage';
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
@@ -68,11 +69,20 @@ const Sidebar: React.FC = () => {
     {
       icon: (
         <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-          <path d="M21 7.28V5c0-1.1-.9-2-2-2H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-2.28c.59-.35 1-.98 1-1.72V9c0-.74-.41-1.37-1-1.72zM20 9v6h-7V9h7zM5 19V5h14v2h-6c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h6v2H5z"/>
+          <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
         </svg>
       ),
       label: '지갑',
       path: '/wallet'
+    },
+    {
+      icon: (
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+        </svg>
+      ),
+      label: '익스플로러',
+      path: '/explorer'
     }
   ];
 
@@ -107,6 +117,7 @@ const App: React.FC = () => {
           <Route path="/friends" element={<CommentPage />} />
           <Route path="/lover" element={<CommentPage />} />
           <Route path="/wallet" element={<WalletPage />} />
+          <Route path="/explorer" element={<ExplorerPage />} />
         </Routes>
         <ScrollToTop />
       </div>
