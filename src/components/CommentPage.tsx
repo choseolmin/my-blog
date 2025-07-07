@@ -80,7 +80,7 @@ const CommentPage: React.FC = () => {
     <div className="blog-container">
       {location.pathname === '/about' ? (
         <>
-          <h2 className="about-title">대나무 숲 블로그</h2>
+          <h2 className="about-title">블록체인 블로그</h2>
           <div className="about-image">
             <img src="https://t4.ftcdn.net/jpg/02/96/25/53/360_F_296255302_5Ukto7ViJj9SCNTyoUpfyw5b2mGzEusA.jpg" alt="대나무 이미지" />
           </div>

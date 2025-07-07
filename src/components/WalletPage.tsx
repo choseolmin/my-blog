@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
-import { Web3Account } from 'web3-eth-accounts';
 import * as bip39 from 'bip39';
 import { Buffer } from 'buffer';
 import { HDNode } from '@ethersproject/hdnode';
 import { ethers } from 'ethers';
+
+
 
 // Buffer를 전역 객체에 추가
 declare global {
@@ -24,7 +25,7 @@ const NETWORKS = {
 };
 
 const WalletPage: React.FC = () => {
-  const [wallet, setWallet] = useState<Web3Account | null>(null);
+  const [wallet, setWallet] = useState<{ address: string; privateKey: string } | null>(null);
   const [balance, setBalance] = useState<string | null>(null);
   const [recipient, setRecipient] = useState('');
   const [amount, setAmount] = useState('');
@@ -70,7 +71,7 @@ const WalletPage: React.FC = () => {
       setWallet({
         address: wallet.address,
         privateKey: wallet.privateKey
-      } as Web3Account);
+      });
       setBalance(null);
       setTxHash(null);
       setIsCreating(false);
@@ -102,7 +103,7 @@ const WalletPage: React.FC = () => {
       setWallet({
         address: wallet.address,
         privateKey: wallet.privateKey
-      } as Web3Account);
+      } );
       setBalance(null);
       setTxHash(null);
       setMnemonic('');
@@ -125,38 +126,40 @@ const WalletPage: React.FC = () => {
     }
   };
 
-  const sendTransaction = async () => {
-    if (!wallet || !recipient || !amount) {
-      alert('모든 필드를 입력해주세요.');
-      return;
+// 트랜잭션 전송 함수
+const sendTransaction = async () => {
+  if (!wallet || !recipient || !amount) {
+    alert('모든 필드를 입력해주세요.');
+    return;
+  }
+
+  try {
+    const value = web3.utils.toWei(amount, 'ether');
+    const gasPrice = await web3.eth.getGasPrice();
+    const tx = {
+      from: wallet.address,
+      to: recipient,
+      value,
+      gas: 21000,
+      gasPrice,
+    };
+
+    const signedTx = await web3.eth.accounts.signTransaction(tx, wallet.privateKey);
+
+    // ✅ 수정된 부분: undefined 방지
+    if (!signedTx.rawTransaction) {
+      throw new Error('서명된 트랜잭션이 생성되지 않았습니다.');
     }
 
-    try {
-      const value = web3.utils.toWei(amount, 'ether');
-      const gasPrice = await web3.eth.getGasPrice();
-      const tx = {
-        from: wallet.address,
-        to: recipient,
-        value,
-        gas: 21000,
-        gasPrice,
-      };
+    const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+    setTxHash(receipt.transactionHash);
+    getBalance(wallet.address);
+  } catch (error) {
+    console.error('트랜잭션 실패:', error);
+    alert('트랜잭션 전송에 실패했습니다.');
+  }
+};
 
-      const signedTx = await web3.eth.accounts.signTransaction(
-        tx,
-        wallet.privateKey
-      );
-      const receipt = await web3.eth.sendSignedTransaction(
-        signedTx.rawTransaction
-      );
-
-      setTxHash(receipt.transactionHash);
-      getBalance(wallet.address);
-    } catch (error) {
-      console.error('트랜잭션 실패:', error);
-      alert('트랜잭션 전송에 실패했습니다.');
-    }
-  };
 
   const copyPrivateKey = async () => {
     if (wallet) {

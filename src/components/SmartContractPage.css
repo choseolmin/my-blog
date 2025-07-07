@@ -1,0 +1,274 @@
+.smart-contract-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.smart-contract-container h2 {
+  color: #333;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.smart-contract-container h3 {
+  color: #34495e;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 8px;
+}
+
+/* 지갑 연결 섹션 */
+.wallet-section {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid #e9ecef;
+}
+
+.connect-container {
+  text-align: center;
+}
+
+.connect-button {
+  background-color: #f6851b;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background-color 0.3s;
+  margin-bottom: 15px;
+}
+
+.connect-button:hover {
+  background-color: #e2761b;
+}
+
+.connect-button:disabled {
+  background-color: #95a5a6;
+  cursor: not-allowed;
+}
+
+.help-text {
+  color: #7f8c8d;
+  font-size: 14px;
+  margin: 0;
+}
+
+.help-text a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.help-text a:hover {
+  text-decoration: underline;
+}
+
+.account-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 15px;
+  border-radius: 6px;
+  border: 1px solid #d5dbdb;
+}
+
+.account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.account-address {
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #ecf0f1;
+  padding: 8px 12px;
+  border-radius: 4px;
+  word-break: break-all;
+  font-size: 14px;
+}
+
+.disconnect-button {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.disconnect-button:hover {
+  background-color: #c0392b;
+}
+
+.contract-form {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #333;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 300px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.deploy-button {
+  background-color: #007bff;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+  transition: background-color 0.3s;
+}
+
+.deploy-button:hover {
+  background-color: #0056b3;
+}
+
+.deploy-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.contract-info {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+}
+
+.contract-info h3 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.contract-info ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.contract-info li {
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+  color: #666;
+}
+
+.contract-info li:before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #007bff;
+}
+
+/* 메시지 스타일 */
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin: 15px 0;
+  border: 1px solid #c3e6cb;
+  text-align: center;
+  font-weight: 500;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin: 15px 0;
+  border: 1px solid #f5c6cb;
+  text-align: center;
+  font-weight: 500;
+}
+
+/* 배포된 주소 표시 */
+.deployed-address {
+  background-color: #d5f4e6;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 20px;
+  border: 1px solid #2ecc71;
+}
+
+.deployed-address h3 {
+  color: #27ae60;
+  margin-top: 0;
+  text-align: center;
+}
+
+.contract-address {
+  font-family: 'Courier New', Courier, monospace;
+  background-color: white;
+  padding: 12px;
+  border-radius: 4px;
+  word-break: break-all;
+  margin: 10px 0;
+  border: 1px solid #bdc3c7;
+  font-size: 14px;
+}
+
+@media (max-width: 768px) {
+  .smart-contract-container {
+    padding: 10px;
+  }
+  
+  .contract-form {
+    padding: 15px;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    padding: 8px;
+  }
+} 
