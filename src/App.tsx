@@ -9,6 +9,8 @@ import ExplorerPage from './components/ExplorerPage';
 import SmartContractPage from './components/SmartContractPage';
 import NFTPage from './components/NFTPage';
 import Sidebar from './components/Sidebar';
+import MetaMaskPage from './components/MetaMaskPage';
+import ERC1155Page from './components/ERC1155Page';
 
 const App: React.FC = () => {
   return (
@@ -28,6 +30,8 @@ const App: React.FC = () => {
             <Route path="/explorer" element={<ExplorerPage />} />
             <Route path="/smart-contract" element={<SmartContractPage />} />
             <Route path="/nft" element={<NFTPage />} />
+            <Route path="/metamask" element={<MetaMaskPage />} />
+            <Route path="/erc1155" element={<ERC1155Page />} />
           </Routes>
           <ScrollToTop />
         </div>

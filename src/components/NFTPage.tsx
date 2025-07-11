@@ -93,9 +93,9 @@ const NFTPage: React.FC = () => {
     // 지갑주소 조회용 이벤트
     let walletListener: any;
     if (walletAddress) {
-      walletListener = contract.events.Transfer({ filter: { from: walletAddress, to: walletAddress } })
+      walletListener = contract.events.Transfer({ filter: { to: walletAddress } })
         .on('data', () => {
-          handleQueryByWallet(); // 지갑주소 조회 자동 갱신
+          handleQueryByWallet(); // 지갑주소로 들어오는 NFT 실시간 반영
         });
     }
     return () => {
