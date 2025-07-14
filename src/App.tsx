@@ -11,6 +11,7 @@ import NFTPage from './components/NFTPage';
 import Sidebar from './components/Sidebar';
 import MetaMaskPage from './components/MetaMaskPage';
 import ERC1155Page from './components/ERC1155Page';
+import ERC2612Page from './components/ERC2612Page';
 
 const App: React.FC = () => {
   return (
@@ -32,6 +33,7 @@ const App: React.FC = () => {
             <Route path="/nft" element={<NFTPage />} />
             <Route path="/metamask" element={<MetaMaskPage />} />
             <Route path="/erc1155" element={<ERC1155Page />} />
+            <Route path="/erc2612" element={<ERC2612Page />} />
           </Routes>
           <ScrollToTop />
         </div>

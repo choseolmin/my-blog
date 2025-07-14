@@ -20,6 +20,18 @@ const Sidebar: React.FC = () => {
         <path d="M12 15l-3.5 6.5h7L12 15z"/>
       </svg>
     ) },
+    { path: '/erc2612', label: 'ERC2612', icon: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+        <g>
+          <rect x="3" y="10" width="18" height="8" rx="2" fill="#1976d2"/>
+          <rect x="3" y="10" width="18" height="8" rx="2" stroke="#1976d2" strokeWidth="2"/>
+          <rect x="7" y="6" width="10" height="4" rx="2" fill="#90caf9"/>
+          <rect x="7" y="6" width="10" height="4" rx="2" stroke="#1976d2" strokeWidth="2"/>
+          <rect x="9" y="14" width="2" height="2" rx="1" fill="#fff"/>
+          <rect x="13" y="14" width="2" height="2" rx="1" fill="#fff"/>
+        </g>
+      </svg>
+    ) },
     { path: '/metamask', label: 'MultiWallet', icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginRight:2}}>
         <rect x="2" y="6" width="20" height="14" rx="3" fill="#1976d2"/>
